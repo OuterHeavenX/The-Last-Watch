@@ -12,5 +12,5 @@ export interface Projectile { id:string; source:string; target:string; x:number;
 export interface Defense { id:string; kind:'Crossbow Turret'|'Spike Trap'|'Ballista'|'Holy Ward'; position:number; range:number; cooldown:number; nextAttack:number; damage:number; type:DamageType; }
 export interface Reward { gold:number; items:string[]; xp:number; jp:number; }
 export interface NightResult { status:'running'|'victory'|'defeat'; integrity:number; reward?:Reward; }
-export interface Settings { master:number; music:number; sfx:number; reducedMotion:boolean; autoPause:boolean; }
+export interface Settings { master:number; music:number; sfx:number; reducedMotion:boolean; autoPause:boolean; tutorialComplete:boolean; }
 export interface SaveGame { saveVersion:2; day:number; night:number; gold:number; castleLevel:number; castleXp:number; integrity:number; heroes:Hero[]; defenses:Defense[]; inventory:string[]; bestiary:Record<string,number>; completedNights:number[]; history:string[]; settings:Settings; }

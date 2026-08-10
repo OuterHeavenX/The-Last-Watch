@@ -25,6 +25,17 @@ A browser-first gothic tower-defense RPG. Command Gravenhold; there is no direct
 - Infirmary, Jobs, and expanded Settings screens
 - Eleven deterministic regression tests
 
+## Combat clarity and onboarding milestone
+
+- Dedicated station platforms and improved wave spacing
+- Hero and enemy health bars, armor/flying/magic/elite/boss markers, weakness callouts, and animated damage numbers
+- Attack, cast, hurt, downed, projectile-impact, and death feedback
+- Tap-to-inspect tactical panel with live HP, armor, range, station, and weakness data
+- Selected-unit highlighting and live targeting lines
+- Gate-breach and hero-downed alerts with optional auto-pause
+- Eight-step first-run beginner tutorial explaining Day preparation, heroes, Jobs, equipment, Nights, Commander abilities, injuries, and rewards
+- Floating replayable How to Play button on every major screen
+
 ## Local development
 
 ```sh
