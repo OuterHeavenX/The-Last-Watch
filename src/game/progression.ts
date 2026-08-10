@@ -1,0 +1,5 @@
+import { abilities } from './data';
+import type { Hero, SaveGame } from './types';
+export function learn(hero:Hero,name:string){const skill=abilities[hero.job].find(a=>a.name===name);if(!skill||hero.learned.includes(name)||hero.jp<skill.cost)return false;hero.jp-=skill.cost;hero.learned.push(name);hero.history.push(`Day — Learned ${name}.`);return true;}
+export function applyVictory(game:SaveGame,reward:{gold:number;items:string[];xp:number;jp:number}){if(game.completedNights.includes(game.night))return false;game.completedNights.push(game.night);game.gold+=reward.gold;game.inventory.push(...reward.items);game.castleXp+=100+game.night*20;for(const h of game.heroes){h.xp+=reward.xp;h.jp+=reward.jp;h.nights++;h.history.push(`Night ${game.night} — Survived ${h.kills} recorded kills.`);while(h.xp>=h.level*100){h.xp-=h.level*100;h.level++;h.maxHp+=8;h.hp=h.maxHp;h.attack+=2;}}
+  game.history.push(`Night ${game.night} — Victory. Gravenhold endured.`);if(game.night===10){game.castleLevel=2;game.history.push('Day — Gravenhold became a Watch Fortress.');}game.night++;game.day++;return true;}

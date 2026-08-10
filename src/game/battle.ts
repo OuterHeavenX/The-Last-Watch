@@ -1,0 +1,24 @@
+import { enemyCatalog, wavesFor } from './data';
+import { RNG } from './rng';
+import type { DamageType, Defense, Enemy, Hero, NightResult, Projectile, Reward } from './types';
+
+const stationPosition:Record<string,number>={Gate:88,Wall:64,'Archer Tower':58,'Mage Post':61,Reserve:84};
+export class Battle {
+  time=0; integrity=100; enemies:Enemy[]=[]; projectiles:Projectile[]=[]; status:NightResult['status']='running'; reward?:Reward; spawned=0; private schedule:Array<{at:number;type:keyof typeof enemyCatalog}>=[]; private rng:RNG;
+  constructor(public night:number,public heroes:Hero[],public defenses:Defense[],seed=night*991){this.rng=new RNG(seed);for(const wave of wavesFor(night))for(let i=0;i<wave.count;i++)this.schedule.push({at:wave.at+i*wave.gap,type:wave.type});this.schedule.sort((a,b)=>a.at-b.at);}
+  private spawn(type:keyof typeof enemyCatalog){const d=enemyCatalog[type];this.enemies.push({id:`e${this.spawned++}`,kind:d.kind,hp:d.hp,maxHp:d.hp,armor:d.armor,speed:d.speed,progress:0,damage:d.damage,attackRate:d.attackRate,nextAttack:0,reward:d.reward,...('flying'in d?{flying:d.flying}:{}),...('weak'in d?{weak:d.weak as DamageType}:{}),...('resist'in d?{resist:d.resist as DamageType}:{})});}
+  private damage(target:Enemy,amount:number,type:DamageType){let value=Math.max(1,amount-(type==='physical'?target.armor:0));if(target.weak===type)value*=1.5;if(target.resist===type)value*=.35;target.hp-=value;}
+  private fire(source:string,target:Enemy,damage:number,type:DamageType,pierce=0,x=0){this.projectiles.push({id:`p${this.time}-${this.projectiles.length}`,source,target:target.id,x,speed:75,damage,type,pierce});}
+  step(dt:number){if(this.status!=='running'||dt<=0)return;dt=Math.min(dt,.1);this.time+=dt;while(this.schedule[0]?.at<=this.time)this.spawn(this.schedule.shift()!.type);
+    for(const e of this.enemies){if(e.hp<=0)continue;if(e.progress<100)e.progress=Math.min(100,e.progress+e.speed*dt);else if(e.nextAttack<=this.time){this.integrity=Math.max(0,this.integrity-e.damage);e.nextAttack=this.time+e.attackRate;}}
+    for(const h of this.heroes){if(h.downed||h.nextAttack>this.time)continue;let range=h.range+(h.learned.includes('Eagle Eye')?8:0);const pos=stationPosition[h.station];const target=this.enemies.filter(e=>e.hp>0&&Math.abs(pos-e.progress)<=range&&(!e.flying||h.range>10)).sort((a,b)=>b.progress-a.progress)[0];if(target){let type:DamageType=h.learned.includes('Fire')?'fire':h.learned.includes('Holy Bolt')?'holy':h.job==='Mage'?'arcane':'physical';let dmg=h.attack+(h.learned.includes('Determination')?4:0);this.fire(h.id,target,dmg,type,h.learned.includes('Piercing Arrow')?1:0,pos);h.nextAttack=this.time+h.cooldown;}}
+    for(const d of this.defenses){if(d.nextAttack>this.time)continue;const valid=this.enemies.filter(e=>e.hp>0&&Math.abs(d.position-e.progress)<=d.range&&(!e.flying||d.kind!=='Spike Trap')).sort((a,b)=>b.progress-a.progress);if(valid[0]){if(d.kind==='Spike Trap')this.damage(valid[0],d.damage,d.type);else this.fire(d.id,valid[0],d.damage,d.type,d.kind==='Ballista'?2:0,d.position);d.nextAttack=this.time+d.cooldown;}}
+    for(const p of this.projectiles){const target=this.enemies.find(e=>e.id===p.target);if(!target||target.hp<=0){p.x=-1;continue;}const dir=Math.sign(target.progress-p.x);p.x+=dir*p.speed*dt;if(Math.abs(target.progress-p.x)<4){this.damage(target,p.damage,p.type);p.x=-1;if(target.hp<=0){const hero=this.heroes.find(h=>h.id===p.source);if(hero)hero.kills++;}if(p.pierce>0){const next=this.enemies.filter(e=>e.hp>0&&e.id!==target.id&&Math.abs(e.progress-target.progress)<12).sort((a,b)=>b.progress-a.progress)[0];if(next)this.fire(p.source,next,p.damage*.7,p.type,p.pierce-1,target.progress);}}}
+    this.projectiles=this.projectiles.filter(p=>p.x>=0);this.enemies=this.enemies.filter(e=>e.hp>0);
+    if(this.integrity<=0)this.status='defeat';else if(!this.schedule.length&&!this.enemies.length){this.status='victory';this.reward=this.makeReward();}
+  }
+  private makeReward(){const xp=30+this.night*12,jp=8+this.night*2,gold=25+this.night*15;const items=this.night===5?['Captain’s Iron Buckler']:this.night===10?['Wardenbone Relic','Moonpiercer Bow']:this.rng.next()<.45?['Grave-Iron Ingot']:[];return{xp,jp,gold,items};}
+  run(max=180){for(let i=0;i<max*20&&this.status==='running';i++)this.step(.05);return{status:this.status,integrity:this.integrity,reward:this.reward};}
+  emergencyRepair(amount=15){this.integrity=Math.min(100,this.integrity+amount);}
+  holyFlare(){for(const e of this.enemies)if(e.kind.includes('Grave')||e.kind.includes('Bone')||e.kind.includes('Shade'))this.damage(e,38,'holy');}
+}
