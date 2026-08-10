@@ -13,6 +13,18 @@ A browser-first gothic tower-defense RPG. Command Gravenhold; there is no direct
 - Versioned local saves with autosave and a manual slot
 - Responsive touch controls and no joystick or directly controlled character
 
+## Progression milestone
+
+- Original transparent Gothic pixel-art atlas integrated into hero rosters and Night battles
+- Procedural offline Web Audio feedback for controls, victory, and defeat
+- Save schema v2 with automatic migration from v1 and three manual slots
+- Eight equipment slots with reversible attack, armor, and range modifiers
+- Ten advanced Job promotions with level, JP, prerequisite, and injury requirements
+- Recoverable 1–3 day injuries caused by real enemy attacks on stationed heroes
+- Affinity, Mentor, Companion, and Rivalry relationship events recorded in character history
+- Infirmary, Jobs, and expanded Settings screens
+- Eleven deterministic regression tests
+
 ## Local development
 
 ```sh

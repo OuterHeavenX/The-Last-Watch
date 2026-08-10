@@ -1,6 +1,6 @@
-import type { Defense, Hero, Job, Station } from './types';
+import type { Defense, Hero, StarterJob, Station } from './types';
 
-const hero = (id:string,name:string,job:Job,station:Station,hp:number,attack:number,armor:number,range:number,cooldown:number,weapon:string):Hero => ({id,name,job,station,level:1,xp:0,jp:30,hp,maxHp:hp,attack,armor,range,cooldown,nextAttack:0,weapon,learned:[],kills:0,nights:0,history:['Day 1 — Answered the call of Gravenhold.']});
+const hero = (id:string,name:string,job:StarterJob,station:Station,hp:number,attack:number,armor:number,range:number,cooldown:number,weapon:string):Hero => ({id,name,job,station,level:1,xp:0,jp:30,hp,maxHp:hp,attack,armor,range,cooldown,nextAttack:0,weapon,equipment:{},learned:[],masteredJobs:[],kills:0,nights:0,history:['Day 1 — Answered the call of Gravenhold.'],relationships:[]});
 export const starterHeroes = ():Hero[] => [
   hero('garrick','Garrick Hale','Soldier','Gate',180,24,9,7,1.25,'Watchman’s Sword'),
   hero('isabel','Isabel Voss','Archer','Archer Tower',110,22,3,42,1.15,'Ashwood Longbow'),
@@ -14,7 +14,7 @@ export const starterDefenses = ():Defense[] => [
   {id:'crossbow',kind:'Crossbow Turret',position:58,range:28,cooldown:1.6,nextAttack:0,damage:17,type:'physical'},
   {id:'spikes',kind:'Spike Trap',position:72,range:3,cooldown:1,nextAttack:0,damage:24,type:'physical'}
 ];
-export const abilities:Record<Job,{name:string,cost:number,description:string}[]> = {
+export const abilities:Record<StarterJob,{name:string,cost:number,description:string}[]> = {
   Soldier:[{name:'Guard',cost:20,description:'+3 armor at the Gate'}], Archer:[{name:'Piercing Arrow',cost:25,description:'Projectiles pierce 1 target'}], Mage:[{name:'Fire',cost:20,description:'Fire damage exploits Wretches'}], Cleric:[{name:'Holy Bolt',cost:20,description:'Holy damage exploits Shades'}], Scout:[{name:'Eagle Eye',cost:20,description:'+8 range'}], Engineer:[{name:'Field Repair',cost:20,description:'Improves Emergency Repair'}], Recruit:[{name:'Determination',cost:15,description:'+4 attack'}]
 };
 export const nightNames = ['The First Watch','Teeth in the Dark','Wings over Gravenhold','Iron at the Gate','The Grave Captain','Whispers Without Bodies','The Broken Host','The Fog Night','The Long Assault','The Bone Warden'];
