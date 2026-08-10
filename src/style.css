@@ -1,0 +1,17 @@
+:root { color: #eee7d4; background: #090b12; font-family: Georgia, serif; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; min-height: 100vh; }
+button { font: inherit; }
+.title-screen { min-height: 100svh; display: grid; place-items: center; overflow: hidden; position: relative; padding: 24px; background: radial-gradient(circle at 72% 19%, #243149 0 8%, transparent 31%), linear-gradient(#111727, #090b12 70%); }
+.moon { position: absolute; width: 19vmin; aspect-ratio: 1; border-radius: 50%; top: 10%; right: 15%; background: #d9dece; box-shadow: 0 0 48px #bfc9c780; }
+.fortress { position: absolute; bottom: 0; width: min(920px, 100%); height: 36%; background: #05070c; clip-path: polygon(0 100%,0 61%,10% 61%,10% 36%,17% 36%,17% 56%,35% 56%,35% 20%,43% 20%,43% 54%,58% 54%,58% 42%,68% 42%,68% 62%,82% 62%,82% 29%,90% 29%,90% 66%,100% 66%,100% 100%); }
+.fortress span { position: absolute; width: 7px; height: 10px; bottom: 30%; background: #c08a46; box-shadow: 50px -20px #c08a46, 110px 18px #c08a46; }
+.fortress span:nth-child(1) { left: 22%; }.fortress span:nth-child(2) { left: 48%; }.fortress span:nth-child(3) { left: 73%; }
+.title-card { position: relative; z-index: 1; text-align: center; margin-bottom: 14vh; text-shadow: 0 3px 1px #000; }
+.eyebrow { color: #b59965; letter-spacing: .32em; text-transform: uppercase; font-size: .75rem; }
+h1 { margin: .25rem 0; color: #eee4c9; font-size: clamp(2.5rem, 9vw, 6.5rem); letter-spacing: .06em; line-height: .94; }
+.subtitle { color: #aeb6c6; letter-spacing: .15em; }
+button { min-width: 190px; margin-top: 1.3rem; padding: .85rem 1.2rem; color: #f3e8cc; background: #591c26; border: 1px solid #bd9260; letter-spacing: .14em; cursor: pointer; }
+button:hover, button:focus-visible { background: #792837; outline: 2px solid #e2c186; outline-offset: 3px; }
+.status { min-height: 1.2em; color: #8e99aa; font-size: .8rem; }
+@media (prefers-reduced-motion: no-preference) { .moon { animation: breathe 5s ease-in-out infinite; } @keyframes breathe { 50% { box-shadow: 0 0 70px #bfc9c799; } } }
